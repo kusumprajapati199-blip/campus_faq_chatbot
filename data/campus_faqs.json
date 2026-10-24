@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "category": "Hostel",
+    "question": "What is the procedure to apply for hostel room allocation?",
+    "answer": "Hostel room allocation is done online through the university portal under the Hostel Management tab at the start of each semester."
+  },
+  {
+    "id": 2,
+    "category": "Library",
+    "question": "How many books can an undergraduate student borrow and for how long?",
+    "answer": "Undergraduate students can borrow up to 4 books for a duration of 14 days. Renewals can be done online if no hold exists."
+  },
+  {
+    "id": 3,
+    "category": "Fees",
+    "question": "What are the acceptable payment modes for tuition fees and what is the late fine policy?",
+    "answer": "Tuition fees can be paid via Net Banking, Debit/Credit Card, or UPI on the student portal. A fine of INR 100 per day applies after the due date."
+  },
+  {
+    "id": 4,
+    "category": "ID Cards",
+    "question": "What should I do if I lose my campus ID card?",
+    "answer": "Report the loss to the security office, submit an online replacement request on the portal, and pay a replacement fee of INR 200 at the accounts desk."
+  },
+  {
+    "id": 5,
+    "category": "Transport",
+    "question": "How can I register for the campus bus service and get a bus pass?",
+    "answer": "Register for transportation services via the student portal under Transport Services and collect your physical bus pass from Block 30."
+  },
+  {
+    "id": 6,
+    "category": "Examinations",
+    "question": "What is the minimum attendance required to appear for end-term examinations?",
+    "answer": "Students must maintain a minimum of 75% attendance in each registered course to be eligible to appear for end-term examinations."
+  }
+]

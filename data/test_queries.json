@@ -1,0 +1,22 @@
+[
+  {
+    "test_query": "I lost my college badge, how do I get a new one?",
+    "target_faq_id": 4
+  },
+  {
+    "test_query": "Where can I sign up for the university bus route?",
+    "target_faq_id": 5
+  },
+  {
+    "test_query": "How many days can I keep a book from the central library?",
+    "target_faq_id": 2
+  },
+  {
+    "test_query": "What happens if I don't hit 75 percent attendance before finals?",
+    "target_faq_id": 6
+  },
+  {
+    "test_query": "What is the penalty if I pay my college semester fee late?",
+    "target_faq_id": 3
+  }
+]
