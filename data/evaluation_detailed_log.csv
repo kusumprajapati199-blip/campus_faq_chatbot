@@ -1,0 +1,16 @@
+Model,Query,Target_ID,Predicted_ID,Confidence_Score,Is_Correct
+Keyword (Jaccard),"I lost my college badge, how do I get a new one?",4,5.0,0.2,False
+Keyword (Jaccard),Where can I sign up for the university bus route?,5,5.0,0.2778,True
+Keyword (Jaccard),How many days can I keep a book from the central library?,2,5.0,0.25,False
+Keyword (Jaccard),What happens if I don't hit 75 percent attendance before finals?,6,4.0,0.1667,False
+Keyword (Jaccard),What is the penalty if I pay my college semester fee late?,3,4.0,0.2222,False
+TF-IDF + Cosine,"I lost my college badge, how do I get a new one?",4,,0.0,False
+TF-IDF + Cosine,Where can I sign up for the university bus route?,5,5.0,0.722,True
+TF-IDF + Cosine,How many days can I keep a book from the central library?,2,,0.0,False
+TF-IDF + Cosine,What happens if I don't hit 75 percent attendance before finals?,6,6.0,0.378,True
+TF-IDF + Cosine,What is the penalty if I pay my college semester fee late?,3,3.0,0.3536,True
+Sentence-Transformers,"I lost my college badge, how do I get a new one?",4,4.0,0.6431,True
+Sentence-Transformers,Where can I sign up for the university bus route?,5,5.0,0.7486,True
+Sentence-Transformers,How many days can I keep a book from the central library?,2,2.0,0.4622,True
+Sentence-Transformers,What happens if I don't hit 75 percent attendance before finals?,6,6.0,0.4452,True
+Sentence-Transformers,What is the penalty if I pay my college semester fee late?,3,3.0,0.6573,True
