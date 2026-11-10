@@ -1,2 +1,7 @@
-scikit-learn
+flask
+google-genai
 sentence-transformers
+scikit-learn
+pandas
+numpy
+nltk

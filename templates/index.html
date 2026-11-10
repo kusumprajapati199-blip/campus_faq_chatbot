@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UniPulse AI — Intelligent Campus Concierge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-base: #07090e;
+            --bg-surface: rgba(17, 21, 34, 0.72);
+            --bg-card: rgba(26, 32, 53, 0.55);
+            --bg-card-hover: rgba(36, 45, 74, 0.75);
+            --border-subtle: rgba(255, 255, 255, 0.07);
+            --border-highlight: rgba(99, 102, 241, 0.4);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-primary: #6366f1;
+            --accent-secondary: #38bdf8;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #3b82f6 50%, #06b6d4 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 10% 15%, rgba(99, 102, 241, 0.14) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.12) 0%, transparent 40%);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        aside {
+            width: 310px;
+            background: var(--bg-surface);
+            backdrop-filter: blur(24px);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 20px;
+            gap: 24px;
+            z-index: 20;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 4px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 8px 20px -4px rgba(99, 102, 241, 0.5);
+        }
+
+        .brand-text h2 {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-text span {
+            font-size: 11px;
+            color: var(--accent-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .new-chat-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .new-chat-btn:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .engine-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .engine-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .engine-option:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .engine-option.active {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            font-weight: 600;
+            border: 1px solid var(--border-highlight);
+        }
+
+        .engine-tag {
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: rgba(99, 102, 241, 0.18);
+            color: #a5b4fc;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 4px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.12);
+            transition: .3s;
+            border-radius: 22px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background: var(--accent-primary); }
+        input:checked + .slider:before { transform: translateX(18px); }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 14px;
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 14px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .sidebar-footer strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topbar {
+            height: 68px;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(7, 9, 14, 0.6);
+            backdrop-filter: blur(16px);
+            z-index: 10;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #34d399;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+        }
+
+        .voice-visualizer {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 6px 14px;
+            border-radius: 999px;
+            color: var(--accent-secondary);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .voice-visualizer.active { display: flex; }
+
+        .bar {
+            width: 3px;
+            height: 12px;
+            background: var(--accent-secondary);
+            border-radius: 2px;
+            animation: equalize 0.8s infinite ease-in-out;
+        }
+        .bar:nth-child(2) { animation-delay: 0.15s; height: 16px; }
+        .bar:nth-child(3) { animation-delay: 0.3s; height: 10px; }
+        .bar:nth-child(4) { animation-delay: 0.45s; height: 14px; }
+
+        @keyframes equalize {
+            0%, 100% { transform: scaleY(0.4); }
+            50% { transform: scaleY(1); }
+        }
+
+        .stage-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            max-width: 920px;
+            width: 100%;
+            margin: 0 auto;
+            scroll-behavior: smooth;
+        }
+
+        .stage-content::-webkit-scrollbar { width: 6px; }
+        .stage-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+        }
+
+        .welcome-hero {
+            margin: auto 0;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 999px;
+            margin-bottom: 16px;
+        }
+
+        .welcome-hero h1 {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            margin-bottom: 10px;
+            background: linear-gradient(180deg, #ffffff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-hero p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            max-width: 540px;
+            margin: 0 auto 32px auto;
+            line-height: 1.6;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            text-align: left;
+        }
+
+        .bento-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 18px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bento-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-highlight);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5);
+        }
+
+        .bento-icon {
+            font-size: 22px;
+            margin-bottom: 10px;
+            display: inline-block;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+        }
+
+        .bento-card h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .bento-card p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .chat-stream {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            padding-bottom: 24px;
+        }
+
+        .msg-row {
+            display: flex;
+            gap: 14px;
+            animation: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-row.user { flex-direction: row-reverse; }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .avatar.bot {
+            background: var(--accent-gradient);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+        }
+
+        .avatar.user {
+            background: #1e293b;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .msg-content-wrapper {
+            max-width: 78%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .bubble {
+            padding: 16px 20px;
+            border-radius: 18px;
+            font-size: 14.5px;
+            line-height: 1.65;
+        }
+
+        .msg-row.user .bubble {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg-row.bot .bubble {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            border-top-left-radius: 4px;
+            backdrop-filter: blur(12px);
+        }
+
+        .msg-footer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 4px;
+        }
+
+        .source-pill {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .source-pill.verified {
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .source-pill.contextual {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+        }
+
+        .icon-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .explain-drawer {
+            background: rgba(9, 12, 20, 0.85);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-top: 4px;
+            font-size: 12px;
+        }
+
+        .explain-drawer summary {
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            list-style: none;
+        }
+
+        .comparison-bars {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .bar-item { display: flex; flex-direction: column; gap: 4px; }
+
+        .bar-header {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .bar-track {
+            width: 100%;
+            height: 7px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .typing-indicator { display: flex; gap: 5px; padding: 6px 4px; }
+        .typing-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: bounce 1.3s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .composer-area {
+            padding: 16px 32px 24px 32px;
+            max-width: 920px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .quick-chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+        .quick-chips::-webkit-scrollbar { display: none; }
+
+        .chip {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .chip:hover {
+            background: rgba(99, 102, 241, 0.15);
+            color: #ffffff;
+            border-color: var(--border-highlight);
+        }
+
+        .composer-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(20, 26, 42, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 8px 10px 8px 18px;
+            border-radius: 18px;
+            box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.6);
+        }
+
+        .composer-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 14.5px;
+            padding: 8px 0;
+        }
+
+        .action-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 17px;
+            transition: all 0.2s ease;
+        }
+
+        .mic-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            border-color: var(--border-subtle);
+        }
+
+        .mic-btn.recording {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .send-btn {
+            background: var(--accent-gradient);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div class="brand">
+            <div class="brand-logo">✦</div>
+            <div class="brand-text">
+                <h2>UniPulse AI</h2>
+                <span>Semantic Concierge</span>
+            </div>
+        </div>
+
+        <button class="new-chat-btn" onclick="resetConversation()">
+            <span>＋</span> New Conversation
+        </button>
+
+        <div>
+            <span class="section-label">Active Retrieval Engine</span>
+            <div class="engine-selector">
+                <div class="engine-option active" data-engine="Sentence-Transformers" onclick="selectEngine(this)">
+                    <span>Sentence-Transformers</span>
+                    <span class="engine-tag">Dense</span>
+                </div>
+                <div class="engine-option" data-engine="TF-IDF" onclick="selectEngine(this)">
+                    <span>TF-IDF + Cosine</span>
+                    <span class="engine-tag">Sparse</span>
+                </div>
+                <div class="engine-option" data-engine="Keyword (Jaccard)" onclick="selectEngine(this)">
+                    <span>Keyword Overlap</span>
+                    <span class="engine-tag">Lexical</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <span class="section-label">Experience & Inspection</span>
+            <div class="setting-row">
+                <span>🔊 AI Voice Synthesis</span>
+                <label class="switch">
+                    <input type="checkbox" id="voiceToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span>🔬 Auto-Expand Viva Trace</span>
+                <label class="switch">
+                    <input type="checkbox" id="vivaToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <strong>💡 Multi-Engine Semantic Architecture</strong>
+            Evaluates queries across Dense Embeddings, TF-IDF, and Lexical Overlap with natural conversational synthesis.
+        </div>
+    </aside>
+
+    <main>
+        <div class="topbar">
+            <div class="status-badge">
+                <span class="pulse-dot"></span>
+                <span id="activeModelLabel">Engine: Sentence-Transformers (MiniLM-L6)</span>
+            </div>
+
+            <div class="voice-visualizer" id="voiceVisualizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <span id="voiceStatusText">AI Speaking...</span>
+            </div>
+        </div>
+
+        <div class="stage-content" id="stageContent">
+            <div class="welcome-hero" id="welcomeHero">
+                <div class="hero-badge">✨ CSE276 Semantic FAQ & Conversational Agent</div>
+                <h1>How can I help you on campus today?</h1>
+                <p>Ask in plain English, informal slang, or use your microphone. Powered by dense semantic embeddings and conversational intelligence.</p>
+
+                <div class="bento-grid">
+                    <div class="bento-card" onclick="triggerQuery('How do I apply for hostel room allocation this semester?')">
+                        <div class="bento-icon">🏠</div>
+                        <h3>Hostel & Residential</h3>
+                        <p>Room allocation, mess policies, and hostel gate timings.</p>
+                    </div>
+                    <div class="bento-card" onclick="triggerQuery('How many books can I borrow from the central library and for how many days?')">
+                        <div class="bento-icon">📚</div>
+                        <h3>Central Library</h3>
+                        <p>Book borrowing limits, renewals, and overdue fine rules.</p>
+                    </div>
+                    <div class="bento-card" onclick="triggerQuery('What is the penalty if I pay my semester tuition fee late?')">
+                        <div class="bento-icon">💳</div>
+                        <h3>Fees & Accounts</h3>
+                        <p>Payment modes, installment deadlines, and late fee policies.</p>
+                    </div>
+                    <div class="bento-card" onclick="triggerQuery('I misplaced my college ID badge, how do I get a replacement?')">
+                        <div class="bento-icon">🪪</div>
+                        <h3>ID Cards & Badges</h3>
+                        <p>Lost card reporting, duplicate reissue fee, and security clearance.</p>
+                    </div>
+                    <div class="bento-card" onclick="triggerQuery('Where do I sign up for the university bus route and collect my pass?')">
+                        <div class="bento-icon">🚌</div>
+                        <h3>Campus Transport</h3>
+                        <p>Bus pass registration, route schedules, and Block 30 pickup.</p>
+                    </div>
+                    <div class="bento-card" onclick="triggerQuery('What happens if my attendance drops below 75% before end-term exams?')">
+                        <div class="bento-icon">📝</div>
+                        <h3>Examinations</h3>
+                        <p>75% attendance criteria, makeup exams, and grading rules.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-stream" id="chatStream"></div>
+        </div>
+
+        <div class="composer-area">
+            <div class="quick-chips">
+                <span class="chip" onclick="triggerQuery('Hey! How are you doing today?')">👋 Say Hello</span>
+                <span class="chip" onclick="triggerQuery('Bro I lost my ID card what to do now?')">🪪 "Bro I lost my ID card..." (Informal)</span>
+                <span class="chip" onclick="triggerQuery('Bus pass registration process?')">🚌 Bus Pass Procedure</span>
+                <span class="chip" onclick="triggerQuery('Minimum attendance for finals?')">📊 75% Attendance Rule</span>
+                <span class="chip" onclick="triggerQuery('Late tuition fee fine per day?')">💰 Late Fee Penalty</span>
+            </div>
+
+            <div class="composer-box">
+                <input 
+                    type="text" 
+                    id="chatInput" 
+                    placeholder="Ask anything about campus policies, use slang, or tap the mic..." 
+                    onkeydown="if(event.key === 'Enter') handleSend()"
+                />
+                <button class="action-btn mic-btn" id="micBtn" title="Voice Input" onclick="toggleMic()">🎙️</button>
+                <button class="action-btn send-btn" title="Send Message" onclick="handleSend()">➤</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentEngine = "Sentence-Transformers";
+        let isRecording = false;
+        let recognition = null;
+
+        const stageContent = document.getElementById("stageContent");
+        const welcomeHero = document.getElementById("welcomeHero");
+        const chatStream = document.getElementById("chatStream");
+        const chatInput = document.getElementById("chatInput");
+        const micBtn = document.getElementById("micBtn");
+        const voiceVisualizer = document.getElementById("voiceVisualizer");
+        const voiceStatusText = document.getElementById("voiceStatusText");
+
+        function selectEngine(el) {
+            document.querySelectorAll(".engine-option").forEach(opt => opt.classList.remove("active"));
+            el.classList.add("active");
+            currentEngine = el.getAttribute("data-engine");
+            document.getElementById("activeModelLabel").innerText = `Engine: ${currentEngine}`;
+        }
+
+        function resetConversation() {
+            window.speechSynthesis.cancel();
+            voiceVisualizer.classList.remove("active");
+            chatStream.innerHTML = "";
+            welcomeHero.style.display = "block";
+        }
+
+        function triggerQuery(text) {
+            chatInput.value = text;
+            handleSend();
+        }
+
+        async function handleSend() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            if (welcomeHero.style.display !== "none") {
+                welcomeHero.style.display = "none";
+            }
+
+            appendUserMessage(text);
+            chatInput.value = "";
+
+            const typingId = appendTypingIndicator();
+
+            try {
+                const response = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query: text, engine: currentEngine })
+                });
+                const result = await response.json();
+                removeElement(typingId);
+                appendBotMessage(result);
+                speakResponse(result.reply);
+            } catch (err) {
+                removeElement(typingId);
+                appendBotMessage({
+                    reply: "Unable to reach the local Python server. Make sure `python app.py` is running!",
+                    isPolicy: false,
+                    category: "System",
+                    activeEngine: currentEngine,
+                    matchedQuestion: "Connection Error",
+                    scores: { "Sentence-Transformers": 0, "TF-IDF": 0, "Keyword (Jaccard)": 0 }
+                });
+            }
+        }
+
+        function appendUserMessage(text) {
+            const row = document.createElement("div");
+            row.className = "msg-row user";
+            row.innerHTML = `
+                <div class="avatar user">👤</div>
+                <div class="msg-content-wrapper">
+                    <div class="bubble">${escapeHTML(text)}</div>
+                </div>
+            `;
+            chatStream.appendChild(row);
+            scrollToBottom();
+        }
+
+        function appendTypingIndicator() {
+            const id = "typing-" + Date.now();
+            const row = document.createElement("div");
+            row.className = "msg-row bot";
+            row.id = id;
+            row.innerHTML = `
+                <div class="avatar bot">✦</div>
+                <div class="msg-content-wrapper">
+                    <div class="bubble">
+                        <div class="typing-indicator">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatStream.appendChild(row);
+            scrollToBottom();
+            return id;
+        }
+
+        function removeElement(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function appendBotMessage(res) {
+            const autoOpen = document.getElementById("vivaToggle").checked ? "open" : "";
+            const badgeClass = res.isPolicy ? "verified" : "contextual";
+            const badgeLabel = res.isPolicy ? `✓ Verified ${res.category} Policy` : `✦ UniPulse Contextual AI`;
+
+            const stScore = Math.round((res.scores["Sentence-Transformers"] || 0) * 100);
+            const tfScore = Math.round((res.scores["TF-IDF"] || 0) * 100);
+            const kwScore = Math.round((res.scores["Keyword (Jaccard)"] || 0) * 100);
+
+            const row = document.createElement("div");
+            row.className = "msg-row bot";
+            row.innerHTML = `
+                <div class="avatar bot">✦</div>
+                <div class="msg-content-wrapper">
+                    <div class="bubble">${formatMarkdown(res.reply)}</div>
+                    
+                    <div class="msg-footer">
+                        <span class="source-pill ${badgeClass}">${badgeLabel}</span>
+                        <button class="icon-btn" onclick="speakResponse(\`${escapeQuotes(res.reply)}\`)">🔊 Listen</button>
+                        <button class="icon-btn" onclick="navigator.clipboard.writeText(\`${escapeQuotes(res.reply)}\`)">📋 Copy</button>
+                    </div>
+
+                    <details class="explain-drawer" ${autoOpen}>
+                        <summary>
+                            <span>🔬 Explainability & 3-Model Benchmark Trace</span>
+                            <span style="color: var(--accent-secondary); font-family: 'JetBrains Mono', monospace;">Active: ${res.activeEngine}</span>
+                        </summary>
+                        <div class="comparison-bars">
+                            <div style="color: var(--text-muted); margin-bottom: 2px;">
+                                Matched Corpus FAQ: <strong style="color: var(--text-primary);">${escapeHTML(res.matchedQuestion || "None")}</strong>
+                            </div>
+                            <div class="bar-item">
+                                <div class="bar-header">
+                                    <span>Sentence-Transformers (Dense Semantic)</span>
+                                    <span style="color: #34d399;">${stScore}% Match</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: ${stScore}%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div class="bar-header">
+                                    <span>TF-IDF + Cosine Similarity</span>
+                                    <span style="color: #38bdf8;">${tfScore}% Match</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: ${tfScore}%; background: #38bdf8;"></div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div class="bar-header">
+                                    <span>Keyword Overlap (Jaccard Baseline)</span>
+                                    <span style="color: #f59e0b;">${kwScore}% Match</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: ${kwScore}%; background: #f59e0b;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            `;
+            chatStream.appendChild(row);
+            scrollToBottom();
+        }
+
+        // Two-Way Voice Integration
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRec();
+            recognition.continuous = false;
+            recognition.lang = 'en-IN';
+
+            recognition.onstart = () => {
+                isRecording = true;
+                micBtn.classList.add("recording");
+                voiceVisualizer.classList.add("active");
+                voiceStatusText.innerText = "Listening to you...";
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                chatInput.value = transcript;
+                handleSend();
+            };
+
+            recognition.onend = () => {
+                isRecording = false;
+                micBtn.classList.remove("recording");
+                voiceVisualizer.classList.remove("active");
+            };
+        }
+
+        function toggleMic() {
+            if (!recognition) {
+                alert("Voice recognition requires Google Chrome or Microsoft Edge.");
+                return;
+            }
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                window.speechSynthesis.cancel();
+                recognition.start();
+            }
+        }
+
+        function speakResponse(text) {
+            const voiceEnabled = document.getElementById("voiceToggle").checked;
+            if (!voiceEnabled || !('speechSynthesis' in window)) return;
+
+            window.speechSynthesis.cancel();
+            const cleanText = text.replace(/\*\*/g, "");
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.rate = 1.03;
+
+            utterance.onstart = () => {
+                voiceVisualizer.classList.add("active");
+                voiceStatusText.innerText = "AI Speaking...";
+            };
+
+            utterance.onend = () => {
+                voiceVisualizer.classList.remove("active");
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function scrollToBottom() {
+            stageContent.scrollTop = stageContent.scrollHeight;
+        }
+
+        function escapeHTML(str) {
+            return String(str).replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag]));
+        }
+
+        function escapeQuotes(str) {
+            return String(str).replace(/`/g, "\\`").replace(/\$/g, "\\$");
+        }
+
+        function formatMarkdown(str) {
+            return String(str)
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+        }
+    </script>
+</body>
+</html>
