@@ -1,0 +1,115 @@
+
+import os
+import streamlit as st
+from smart_agent import SmartCampusAssistant
+
+st.set_page_config(
+    page_title="Campus FAQ Chatbot",
+    page_icon="🎓",
+    layout="centered"
+)
+
+st.title("🎓 Campus FAQ Chatbot")
+st.caption("Your AI-powered campus assistant")
+
+# Get Gemini API key securely
+try:
+    API_KEY = st.secrets["GEMINI_API_KEY"]
+except Exception:
+    API_KEY = os.environ.get("GEMINI_API_KEY", "")
+
+if not API_KEY or API_KEY == "YOUR_API_KEY_HERE":
+    st.error("Gemini API key is missing. Configure it in Streamlit Secrets.")
+    st.stop()
+
+
+@st.cache_resource
+def load_assistant(api_key):
+    return SmartCampusAssistant(
+        data_path="data/campus_faqs.json",
+        api_key=api_key
+    )
+
+
+try:
+    assistant = load_assistant(API_KEY)
+except Exception as e:
+    st.error(f"Could not initialize chatbot: {e}")
+    st.stop()
+
+# Chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display previous messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# User input
+query = st.chat_input("Ask anything about your campus...")
+
+if query:
+    st.session_state.messages.append({
+        "role": "user",
+        "content": query
+    })
+
+    with st.chat_message("user"):
+        st.markdown(query)
+
+    with st.chat_message("assistant"):
+        with st.spinner("Searching campus information..."):
+            try:
+                result = assistant.ask(
+                    user_prompt=query,
+                    active_engine="Sentence-Transformers"
+                )
+
+                # Handle different response formats
+                if isinstance(result, dict):
+                    answer = next(
+                        (
+                            result[key]
+                            for key in (
+                                "answer",
+                                "response",
+                                "reply",
+                                "message",
+                                "final_answer"
+                            )
+                            if key in result
+                        ),
+                        None
+                    )
+
+                    if answer is not None:
+                        answer = str(answer)
+                        st.markdown(answer)
+
+                        with st.expander("Response details"):
+                            st.json(result)
+                    else:
+                        answer = str(result)
+                        st.json(result)
+                else:
+                    answer = str(result)
+                    st.markdown(answer)
+
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": answer
+                })
+
+            except Exception as e:
+                st.error(f"Chatbot error: {e}")
+
+# Sidebar
+with st.sidebar:
+    st.header("About")
+    st.write("Campus FAQ Assistant")
+    st.write("Powered by Gemini and semantic retrieval.")
+
+    if st.button("Clear Chat"):
+        st.session_state.messages = []
+        st.rerun()
